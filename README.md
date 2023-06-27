@@ -24,18 +24,22 @@ Yellow is the Ficsit Networks Network Cable, Blue is Compressed Steam.
 - [ ] Refactor the Lua code
   - Need to make it cleaner and easier to read
 - [ ] Add a timer function for opening and closing the valve (so it will close after 'x' seconds)
+- [ ] Start the wiki
+- [ ] Make a walkthrough video
 
 ## Ideas for the future
 ### Monitoring the steam
 I'm considering changing the way I monitor the steam production and amounts. I started this way because I adapted a version of this from what I had previously setup with the Circuitry mod (formly called Wiremod).[^2] That version would simply flush the small fluid buffers immediately "downstream" of the reactors so the reactor outputs wouldn't get backed up. While this worked I wanted to still use the steam that was produced.
 
 ### Misc.
+Random ideas that I might do in the future for this project.
 - add graphs and charts on data screens
   - production line graphs (steam, power, etc.)
 - add to / improve on the control panel
 - add networking components for remote monitoring at another location
 - create a shareable blueprint to put on [Satisfactory Calculator](https://satisfactory-calculator.com/)
 - eventually add structure / design to the factory so it doesn't just float above the lake
+- video tutorials
 
 ## Mod List
 - [Ficsit Mod Loader](https://ficsit.app/sml-versions)
