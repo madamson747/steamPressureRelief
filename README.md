@@ -25,7 +25,7 @@ Yellow is the Ficsit Networks Network Cable, Blue is Compressed Steam.
   - Need to make it cleaner and easier to read
 - [ ] Add a timer function for opening and closing the valve (so it will close after 'x' seconds)
 - [ ] Start the wiki
-- [ ] Make a walkthrough video
+- [x] Make a [walkthrough video](https://youtu.be/2Id5shiCwyU)
 
 ## Ideas for the future
 ### Monitoring the steam
