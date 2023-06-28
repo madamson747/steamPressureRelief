@@ -1,13 +1,12 @@
-/*
-Setup all the modules needed for the computer and control panel
+--Setup all the modules needed for the computer and control panel
 
-Each Fluid Container/Buffer has the following:
-- a valve on the input side
-- a 2 position switch
-- an indicator light
-- a micro LED screen to display how full it is
-- a guage to display the flow of steam into the buffer
-*/
+--Each Fluid Container/Buffer has the following:
+-- - a valve on the input side
+-- - a 2 position switch
+-- - an indicator light
+-- - a micro LED screen to display how full it is
+-- - a guage to display the flow of steam into the buffer
+
 
 controlPanel = component.proxy("3AD3518A4058C87D99DE69B3A31A1065")
 computer = component.proxy("C1393A074F7CD4EB5CB26BAAD70C10B9")
@@ -57,23 +56,32 @@ valveOverflowGauge = controlPanel:getModule(7,3,0)
 --a stop button to use for manually emptying the fluid buffers if needed
 flushBtn = controlPanel:getModule(4,3,0)
 
---if any buffer is at or over 75% of total capacity then return true (so we can open the valve)
-function bufferCapacity()
- local b1P = buffer1.fluidContent / buffer1.maxFluidContent
- local b2P = buffer1.fluidContent / buffer2.maxFluidContent
- local b3P = buffer1.fluidContent / buffer3.maxFluidContent
-
- if (b1P or b2P or b3P) >= .75 --at or above 75% capacity in the buffers
-  then
-   return true
-  else
-   return false
- end
-end
-
 --primary function used to let the system automatically open and close the valve; also allows for manually flushing the buffers
 function autoMode()
+ buffer1Content = math.ceil(buffer1.fluidContent)
+ buffer2Content = math.ceil(buffer2.fluidContent)
+ buffer3Content = math.ceil(buffer3.fluidContent)
+ maxBufferContent = math.floor(buffer1.maxFluidContent)
+ b1p = (buffer1Content / maxBufferContent)
+ b2p = (buffer2Content / maxBufferContent)
+ b3p = (buffer3Content / maxBufferContent)
+ capTarget = 0.75
+
  local flushing = true
+ local shouldOpenValve
+
+ if b1p >= capTarget
+ then
+  shouldOpenValve = true
+ elseif b2p >= capTarget
+ then
+  shouldOpenValve = true
+ elseif b3p >= capTarget
+ then
+  shouldOpenValve = true
+ else
+  shouldOpenValve = false
+ end
 
  if s == flushBtn and (buffer1Bool == true and buffer2Bool == true and buffer3Bool == true and manFlushSafety.state == true)
  then --trigger the buffers to get flushed
@@ -83,14 +91,16 @@ function autoMode()
  end
    
 --update some UI on the control panel
- if bufferCapacity()
+ if shouldOpenValve
  then
+  --print("valve should open")
   flushing = true
   manFlushLEDScreen:setText("Flushing...")
   valveLEDScreen:setText("Open")
   valveOverflow.userflowLimit = 150
   valveOverflowGauge.percent = 1
  else
+  --print("valve should be closed")
   flushing = false
   valveLEDScreen:setText("Closed")
   valveOverflowGauge.percent = 0
@@ -112,7 +122,9 @@ while true do
  bufferFlowGauge2.percent = bufferFlowValve2.flow
  bufferFlowGauge3.percent = bufferFlowValve3.flow
  
+ autoMode()
 
+ 
  event.listen(bufferSwitch1, bufferSwitch2, bufferSwitch3, manFlushSafety, buffer1, buffer2, buffer3, flushBtn)
  e, s = event.pull(0.0)
  if s == bufferSwitch3 and bufferSwitch3.state == true
@@ -167,7 +179,6 @@ while true do
  if (buffer1Bool == false or buffer2Bool == false or buffer3Bool == false)
  then
    manFlushLEDScreen:setText("Auto Mode")
-   autoMode()
   if buffer1Bool == true
    then bufferIndicator1:setColor(1,0,0,1)
    else
